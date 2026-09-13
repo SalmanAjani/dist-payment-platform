@@ -35,7 +35,6 @@ public class ApiKeyServiceImpl implements ApiKeyService {
     private BCryptPasswordEncoder BCRPYT = new BCryptPasswordEncoder();
     private final ApiKeyCache apiKeyCache;
 
-
     @Override
     @Transactional
     public ApiKeyCreateResponse create(UUID merchantId, CreateApiKeyRequest request) {
@@ -72,6 +71,8 @@ public class ApiKeyServiceImpl implements ApiKeyService {
                 .orElseThrow(() -> new ResourceNotFoundException("ApiKey", keyId));
 
         key.setEnabled(false);
+
+        // evict from redis cache
         apiKeyCache.evict(key.getKeyId());
     }
 
@@ -92,6 +93,7 @@ public class ApiKeyServiceImpl implements ApiKeyService {
         apiKey.setGracePeriodExpiresAt(LocalDateTime.now().plusHours(24));
         apiKey = apiKeyRepository.save(apiKey);
 
+        // evict from redis cache
         apiKeyCache.evict(apiKey.getKeyId());
 
         return new ApiKeyCreateResponse(apiKey.getId(), apiKey.getKeyId(),

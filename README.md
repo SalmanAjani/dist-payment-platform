@@ -1,4 +1,4 @@
-# 💳 Distributed Payment Gateway
+# 💳 Distributed Payment Processing Platform
 
 [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-4.x-brightgreen?style=flat-square&logo=spring-boot)](https://spring.io/projects/spring-boot)
 [![Java](https://img.shields.io/badge/Java21+-orange?style=flat-square&logo=java)](https://www.oracle.com/java/)

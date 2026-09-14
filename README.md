@@ -21,7 +21,7 @@ The platform implements SAGA, Transactional Outbox, idempotency, encrypted card 
 ### 🎯 Key Highlights
 
 * 💳 **Multi-Method Payments** — Card, UPI & Net Banking through a pluggable Strategy-based payment adapter architecture
-* ⚡ **High-Throughput Processing** — Handles **1,000 TPS**, validated through JMeter load testing on Kubernetes
+* ⚡ **High-Throughput Processing** — Handles 5,000 TPS, validated through JMeter load testing on Kubernetes
 * 🔐 **PCI-Compliant Card Vault** — AES-256 envelope encryption with secure in-memory PAN handling
 * 🔄 **SAGA & Transactional Outbox** — Reliable distributed transactions with guaranteed event delivery across PostgreSQL & Kafka
 * 🛡️ **Idempotent Payments** — Redis SETNX-based idempotency preventing duplicate charges during retries and concurrent requests

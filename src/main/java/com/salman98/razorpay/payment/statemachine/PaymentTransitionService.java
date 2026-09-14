@@ -3,6 +3,7 @@ package com.salman98.razorpay.payment.statemachine;
 import com.salman98.razorpay.common.enums.PaymentActor;
 import com.salman98.razorpay.common.enums.PaymentEvent;
 import com.salman98.razorpay.common.enums.PaymentStatus;
+import com.salman98.razorpay.merchant.security.MerchantContext;
 import com.salman98.razorpay.payment.entity.Payment;
 import com.salman98.razorpay.payment.entity.PaymentTransitionLog;
 import com.salman98.razorpay.payment.repository.PaymentTransitionLogRepository;
@@ -17,6 +18,7 @@ public class PaymentTransitionService {
 
     private final PaymentTransitionLogRepository paymentTransitionLogRepository;
     private final PaymentStateMachine paymentStateMachine;
+    private final MerchantContext merchantContext;
 
     public PaymentStatus apply(Payment payment, PaymentEvent event) {
 
@@ -27,7 +29,7 @@ public class PaymentTransitionService {
                 .fromStatus(payment.getStatus())
                 .event(event)
                 .toStatus(next)
-                .actor(PaymentActor.SYSTEM) //TODO: fetch merchant context to identify actor
+                .actor(merchantContext.getMerchantId() != null ? PaymentActor.MERCHANT : PaymentActor.SYSTEM)
                 .occurredAt(LocalDateTime.now())
                 .build();
 

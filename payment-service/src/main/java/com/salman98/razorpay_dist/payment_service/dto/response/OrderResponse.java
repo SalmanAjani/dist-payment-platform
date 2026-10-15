@@ -1,0 +1,23 @@
+package com.salman98.razorpay_dist.payment_service.dto.response;
+
+
+import com.salman98.razorpay_dist.common_lib.entity.Money;
+import com.salman98.razorpay_dist.common_lib.enums.OrderStatus;
+
+import java.time.LocalDateTime;
+import java.util.Map;
+import java.util.UUID;
+
+public record OrderResponse(
+        UUID id,
+        UUID merchantId,
+        UUID customerId,
+        String receipt,
+        Money amount,
+        OrderStatus status,
+        Integer attempts,
+        Map<String, Object> notes,
+        LocalDateTime expiresAt,
+        LocalDateTime createdAt
+) {
+}

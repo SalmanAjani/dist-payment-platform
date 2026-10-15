@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: config-service
+
+  cloud:
+    config.server.git:
+      uri: https://github.com/SalmanAjani/dist-payment-platform-config
+      username: SalmanAjani
+      password: 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
+      default-label: main
+
+server.port: 8888
+
+

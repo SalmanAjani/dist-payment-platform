@@ -1,0 +1,13 @@
+package com.salman98.razorpay_dist.config_service;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+
+@SpringBootTest
+class ConfigServiceApplicationTests {
+
+	@Test
+	void contextLoads() {
+	}
+
+}

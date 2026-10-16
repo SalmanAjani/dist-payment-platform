@@ -1,5 +1,6 @@
 com.salman98.razorpay_dist.common_lib.audit.SharedAuditAutoConfiguration
 com.salman98.razorpay_dist.common_lib.config.SharedKafkaAutoConfiguration
+com.salman98.razorpay_dist.common_lib.web.SharedWebFilterAutoConfiguration
 com.salman98.razorpay_dist.common_lib.idempotency.SharedResilienceAutoConfiguration
 com.salman98.razorpay_dist.common_lib.util.SharedSecurityAutoConfiguration
 com.salman98.razorpay_dist.common_lib.exception.SharedExceptionAutoConfiguration

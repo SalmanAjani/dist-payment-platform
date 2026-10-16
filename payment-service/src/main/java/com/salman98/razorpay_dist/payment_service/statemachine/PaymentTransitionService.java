@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -24,12 +25,14 @@ public class PaymentTransitionService {
 
         PaymentStatus next = paymentStateMachine.transition(payment.getStatus(), event);
 
+        PaymentActor actor = getPaymentActor();
+
         PaymentTransitionLog log = PaymentTransitionLog.builder()
                 .payment(payment)
                 .fromStatus(payment.getStatus())
                 .event(event)
                 .toStatus(next)
-                .actor(merchantContext.getMerchantId() != null ? PaymentActor.MERCHANT : PaymentActor.SYSTEM)
+                .actor(actor)
                 .occurredAt(LocalDateTime.now())
                 .build();
 
@@ -38,5 +41,22 @@ public class PaymentTransitionService {
         paymentTransitionLogRepository.save(log);
 
         return next;
+    }
+
+    private PaymentActor getPaymentActor() {
+        try {
+            String keyId = merchantContext.getKeyId();
+            UUID merchantId = merchantContext.getMerchantId();
+
+            if (keyId != null && !keyId.isBlank()) {
+                return PaymentActor.CUSTOMER;
+            } else if (merchantId != null) {
+                return PaymentActor.MERCHANT;
+            }
+
+        } catch (Exception ignored) {
+        }
+
+        return PaymentActor.SYSTEM;
     }
 }

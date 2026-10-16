@@ -6,8 +6,6 @@ import com.salman98.razorpay_dist.common_lib.entity.Money;
 import com.salman98.razorpay_dist.common_lib.enums.EventAggregateType;
 import com.salman98.razorpay_dist.common_lib.enums.SettlementStatus;
 import com.salman98.razorpay_dist.common_lib.exception.ResourceNotFoundException;
-import com.salman98.razorpay_dist.operations_service.client.MerchantServiceClient;
-import com.salman98.razorpay_dist.operations_service.client.PaymentServiceClient;
 import com.salman98.razorpay_dist.operations_service.entity.Settlement;
 import com.salman98.razorpay_dist.operations_service.entity.SettlementPayment;
 import com.salman98.razorpay_dist.operations_service.entity.SettlementPaymentId;
@@ -37,13 +35,12 @@ public class SettlementTransactionExecutor {
     private final SettlementRepository settlementRepository;
     private final SettlementPaymentRepository settlementPaymentRepository;
     private final BankTransferProcessor bankTransferProcessor;
-    private final PaymentServiceClient paymentServiceClient;
-    private final MerchantServiceClient merchantServiceClient;
+    private final SettlementIntegrationGateway settlementIntegrationGateway;
 
     private final OutboxEventPublisher outboxEventPublisher;
 
     public void processForMerchant(UUID merchantId, LocalDate settlementDate) {
-        List<PaymentSettlementView> unsettledPayments = paymentServiceClient.findUnsettledCaptured(merchantId);
+        List<PaymentSettlementView> unsettledPayments = settlementIntegrationGateway.findUnsettledCaptured(merchantId);
         if (unsettledPayments.isEmpty()) return;
 
         log.info("Processing {} unsettled payments for merchantId: {} on {} date",
@@ -83,7 +80,7 @@ public class SettlementTransactionExecutor {
             }
             settlementPaymentRepository.saveAll(links);
 
-            SettlementBankDetails settlementBankDetails = merchantServiceClient.getSettlementBankDetails(merchantId);
+            SettlementBankDetails settlementBankDetails = settlementIntegrationGateway.getSettlementBankDetails(merchantId);
             BankTransferResult bankTransferResult = bankTransferProcessor.initiate(settlement.getId(), merchantId, netAmount,
                     settlementBankDetails.accountNumber(), settlementBankDetails.ifsc());
 
@@ -119,7 +116,7 @@ public class SettlementTransactionExecutor {
                     .map(SettlementPayment::getId)
                     .map(SettlementPaymentId::getPaymentId)
                     .toList();
-            paymentServiceClient.markSettled(paymentIds);
+            settlementIntegrationGateway.markSettled(paymentIds);
 
             outboxEventPublisher.publish(EventAggregateType.SETTLEMENT, settlementId,
                     "SETTLEMENT_PROCESSED", Map.of(
